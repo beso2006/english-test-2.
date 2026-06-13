@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة قواعد اللغة الإنجليزية 🎉</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mada:wght@400;600;700&display=swap');
+
+:root{
+  --yellow:#FFD93D;
+  --yellow-dark:#E6B800;
+  --blue:#54C5F8;
+  --blue-dark:#2BA3D6;
+  --pink:#FF9EBB;
+  --pink-dark:#E5708F;
+  --green:#7ED957;
+  --green-dark:#4FAE2A;
+  --red:#FF7A7A;
+  --red-dark:#E25555;
+  --purple:#B28DFF;
+  --purple-dark:#8A63E0;
+  --orange:#FFB76B;
+  --orange-dark:#E89A3C;
+  --teal:#8CE5C9;
+  --teal-dark:#54B596;
+  --dark:#2D2A4A;
+  --cream:#FFF8EC;
+  --gray:#F0EEF6;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Mada','Baloo 2',sans-serif;
+  background: linear-gradient(135deg, #FFE8B0 0%, #C9F0FF 45%, #FFD3E8 100%);
+  background-size: 200% 200%;
+  animation: bgShift 18s ease infinite;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  color:var(--dark);
+}
+@keyframes bgShift{
+  0%{background-position:0% 0%;}
+  50%{background-position:100% 100%;}
+  100%{background-position:0% 0%;}
+}
+
+h1,h2,h3,.btn,.score-pill,.progress-text{font-family:'Baloo 2',sans-serif;}
+
+#app{
+  width:100%;
+  max-width:640px;
+}
+
+.screen{display:none;}
+.screen.active{display:block; animation: popIn .35s ease;}
+
+@keyframes popIn{
+  from{opacity:0; transform: scale(.92) translateY(10px);}
+  to{opacity:1; transform: scale(1) translateY(0);}
+}
+
+/* ===== Home screen ===== */
+.home-card{
+  background:var(--cream);
+  border-radius:32px;
+  border:5px solid var(--dark);
+  box-shadow: 0 10px 0 rgba(45,42,74,.18);
+  padding:28px 22px;
+  text-align:center;
+}
+.home-title{
+  font-size:1.9rem;
+  font-weight:800;
+  margin:0 0 6px;
+  color:var(--dark);
+}
+.home-sub{
+  font-size:1rem;
+  margin:0 0 22px;
+  color:#6b6680;
+  font-weight:600;
+}
+.category-list{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.category-card{
+  border:4px solid var(--dark);
+  border-radius:22px;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  cursor:pointer;
+  text-align:right;
+  font-weight:700;
+  font-size:1.05rem;
+  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: 0 6px 0 rgba(45,42,74,.18);
+  background:#fff;
+}
+.category-card:hover{transform: translateY(-3px);}
+.category-card:active{transform: translateY(3px); box-shadow:0 2px 0 rgba(45,42,74,.18);}
+.category-card.c1{background:var(--blue);}
+.category-card.c2{background:var(--yellow);}
+.category-card.c3{background:var(--pink);}
+.category-card.c4{background:var(--purple);}
+.category-card.c5{background:var(--orange);}
+.category-card.c6{background:var(--teal);}
+.category-emoji{font-size:2.1rem; flex-shrink:0;}
+.category-text{flex:1;}
+.category-title{font-size:1.15rem; font-weight:800; margin-bottom:2px;}
+.category-count{font-size:.85rem; font-weight:600; opacity:.75;}
+
+/* ===== Quiz screen ===== */
+.quiz-card{
+  background:var(--cream);
+  border-radius:32px;
+  border:5px solid var(--dark);
+  box-shadow: 0 10px 0 rgba(45,42,74,.18);
+  padding:24px 20px;
+}
+.top-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+  gap:10px;
+}
+.cat-label{
+  font-weight:800;
+  font-size:.95rem;
+  background:var(--purple);
+  color:#fff;
+  border:3px solid var(--dark);
+  border-radius:14px;
+  padding:6px 12px;
+}
+.score-pill{
+  font-weight:800;
+  font-size:.95rem;
+  background:var(--green);
+  border:3px solid var(--dark);
+  border-radius:14px;
+  padding:6px 12px;
+}
+.progress-track{
+  background:#E5E1F5;
+  border:3px solid var(--dark);
+  border-radius:16px;
+  height:18px;
+  overflow:hidden;
+  margin-bottom:6px;
+}
+.progress-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  border-radius:16px 0 0 16px;
+  transition: width .35s ease;
+}
+.progress-text{
+  text-align:center;
+  font-weight:700;
+  font-size:.85rem;
+  color:#6b6680;
+  margin-bottom:16px;
+}
+
+.question-box{
+  background:#fff;
+  border:4px solid var(--dark);
+  border-radius:22px;
+  padding:20px 18px;
+  margin-bottom:18px;
+  direction:ltr;
+  text-align:center;
+}
+.question-text{
+  font-size:1.25rem;
+  font-weight:700;
+  line-height:1.7;
+  color:var(--dark);
+  margin:0;
+}
+.blank{
+  display:inline-block;
+  min-width:54px;
+  border-bottom:3px dashed var(--purple-dark);
+  font-weight:800;
+  color:var(--purple-dark);
+}
+
+.options-grid{
+  direction:ltr;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.options-grid.single-col{grid-template-columns:1fr;}
+.options-grid.many-options{grid-template-columns:repeat(2,1fr);}
+.options-grid.many-options .option-btn:last-child:nth-child(odd){grid-column: 1 / -1;}
+
+.option-btn{
+  font-family:'Baloo 2','Mada',sans-serif;
+  border:4px solid var(--dark);
+  border-radius:18px;
+  background:#fff;
+  padding:14px 10px;
+  font-size:1.05rem;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow: 0 5px 0 rgba(45,42,74,.18);
+  transition: transform .12s ease, box-shadow .12s ease, background .25s ease, color .25s ease;
+  color:var(--dark);
+  text-align:center;
+  direction:ltr;
+}
+.option-btn:hover:not(:disabled){
+  transform: translateY(-2px);
+  background:var(--gray);
+}
+.option-btn:active:not(:disabled){
+  transform: translateY(3px);
+  box-shadow:0 1px 0 rgba(45,42,74,.18);
+}
+.option-btn:disabled{cursor:default;}
+.option-btn.correct{
+  background:var(--green);
+  color:#fff;
+  animation: bounceCorrect .5s ease;
+  box-shadow: 0 5px 0 var(--green-dark);
+}
+.option-btn.wrong{
+  background:var(--red);
+  color:#fff;
+  animation: shake .4s ease;
+  box-shadow: 0 5px 0 var(--red-dark);
+}
+.option-btn.dim{opacity:.45;}
+
+@keyframes bounceCorrect{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.08);}
+  100%{transform:scale(1);}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-6px);}
+  40%{transform:translateX(6px);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(4px);}
+}
+
+.feedback-box{
+  display:none;
+  border:4px solid var(--dark);
+  border-radius:18px;
+  padding:14px 16px;
+  margin-bottom:14px;
+  font-weight:700;
+  font-size:.98rem;
+  line-height:1.8;
+  direction:rtl;
+  text-align:right;
+  animation: popIn .3s ease;
+}
+.feedback-box.show{display:block;}
+.feedback-box.correct-fb{background:#E6FBE0; border-color:var(--green-dark);}
+.feedback-box.wrong-fb{background:#FFEDED; border-color:var(--red-dark);}
+.feedback-title{font-size:1.1rem; margin-bottom:6px; display:block;}
+
+.nav-row{
+  display:flex;
+  gap:12px;
+}
+.btn{
+  flex:1;
+  font-family:'Baloo 2',sans-serif;
+  font-weight:800;
+  font-size:1rem;
+  padding:14px 10px;
+  border:4px solid var(--dark);
+  border-radius:18px;
+  cursor:pointer;
+  box-shadow: 0 5px 0 rgba(45,42,74,.18);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .2s ease;
+  background:var(--blue);
+  color:var(--dark);
+}
+.btn:active:not(:disabled){transform: translateY(3px); box-shadow:0 1px 0 rgba(45,42,74,.18);}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+.btn.primary{background:var(--green);}
+.btn.warm{background:var(--yellow);}
+.btn.home-btn{background:var(--pink); flex:none; padding:14px 18px;}
+
+/* ===== Result screen ===== */
+.result-card{
+  background:var(--cream);
+  border-radius:32px;
+  border:5px solid var(--dark);
+  box-shadow: 0 10px 0 rgba(45,42,74,.18);
+  padding:32px 22px;
+  text-align:center;
+}
+.result-emoji{font-size:4rem; margin-bottom:8px;}
+.result-title{font-size:1.6rem; font-weight:800; margin:0 0 6px;}
+.result-score{
+  font-size:2.4rem;
+  font-weight:800;
+  color:var(--purple-dark);
+  margin:6px 0 4px;
+}
+.result-msg{font-size:1rem; font-weight:600; color:#6b6680; margin-bottom:24px;}
+.result-actions{display:flex; flex-direction:column; gap:12px;}
+
+/* ===== Confetti ===== */
+.confetti-piece{
+  position:fixed;
+  top:-20px;
+  width:10px;
+  height:16px;
+  z-index:999;
+  pointer-events:none;
+  border-radius:3px;
+  animation-name: fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+@keyframes fall{
+  to{
+    transform: translateY(110vh) rotate(540deg);
+    opacity:.9;
+  }
+}
+
+@media (max-width:420px){
+  .options-grid{grid-template-columns:1fr;}
+  .question-text{font-size:1.1rem;}
+  .home-title{font-size:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="home-screen">
+    <div class="home-card">
+      <div style="font-size:2.6rem; margin-bottom:6px;">🎮📚</div>
+      <h1 class="home-title">لعبة قواعد اللغة الإنجليزية</h1>
+      <p class="home-sub">اختر التحدي الذي تريد لعبه وابدأ المتعة! 🌟</p>
+      <div class="category-list" id="category-list"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quiz-screen">
+    <div class="quiz-card">
+      <div class="top-bar">
+        <span class="cat-label" id="cat-label">📘</span>
+        <span class="score-pill" id="score-pill">⭐ 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-text" id="progress-text"></div>
+
+      <div class="question-box">
+        <p class="question-text" id="question-text"></p>
+      </div>
+
+      <div class="options-grid" id="options-grid"></div>
+
+      <div class="feedback-box" id="feedback-box">
+        <span class="feedback-title" id="feedback-title"></span>
+        <span id="feedback-text"></span>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn home-btn" id="home-btn-quiz" title="القائمة الرئيسية">🏠</button>
+        <button class="btn" id="prev-btn">⬅️ السابق</button>
+        <button class="btn primary" id="next-btn" disabled>التالي ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="result-screen">
+    <div class="result-card">
+      <div class="result-emoji" id="result-emoji">🏆</div>
+      <h2 class="result-title" id="result-title">أنت بطل!</h2>
+      <div class="result-score" id="result-score">0 / 0</div>
+      <p class="result-msg" id="result-msg"></p>
+      <div class="result-actions">
+        <button class="btn primary" id="retry-btn">🔁 العب مرة أخرى</button>
+        <button class="btn warm" id="menu-btn">🏠 القائمة الرئيسية</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   DATA — جاهز لإضافة أو تعديل الأسئلة بسهولة
+   كل عنصر: { q: نص السؤال (استخدم [1] و[2] للفراغات إن وجدت),
+              options: [قائمة الخيارات],
+              correct: رقم الإجابة الصحيحة (يبدأ من 0),
+              explain: شرح بالعربية }
+========================================================= */
+const questionsData = {
+
+  forSince: {
+    title: "For & Since",
+    emoji: "⏳",
+    cssClass: "c1",
+    questions: [
+      {q:"I have been living in New York [____] 1 year.", options:["for","since"], correct:0, explain:"نستخدم <b>for</b> مع مدة زمنية محددة (1 year)، أما <b>since</b> فتُستخدم مع نقطة زمنية محددة في الماضي (مثل: 2003، last week)."},
+      {q:"I haven't seen you [____] a week.", options:["for","since"], correct:0, explain:"نستخدم <b>for</b> مع المدة (a week)، بينما <b>since</b> تحتاج إلى نقطة بداية محددة."},
+      {q:"I have been waiting [____] 12:30.", options:["for","since"], correct:1, explain:"12:30 هي نقطة زمنية محددة (بداية الانتظار)، لذلك نستخدم <b>since</b>، أما <b>for</b> فتُستخدم مع المدة."},
+      {q:"I've lived here [____] 5 years.", options:["for","since"], correct:0, explain:"5 years مدة زمنية، فالإجابة الصحيحة <b>for</b>."},
+      {q:"I've lived here [____] 2003.", options:["for","since"], correct:1, explain:"2003 نقطة زمنية محددة في الماضي، فنستخدم <b>since</b>."},
+      {q:"[____] she came here I've been very nervous.", options:["For","Since"], correct:1, explain:"الجملة 'she came here' تمثل نقطة بداية في الماضي، فنستخدم <b>since</b> + جملة."},
+      {q:"She has been married [____] ten years.", options:["for","since"], correct:0, explain:"ten years مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"She has been a doctor [____] 1998.", options:["for","since"], correct:1, explain:"1998 نقطة زمنية محددة، فنستخدم <b>since</b>."},
+      {q:"I have been living in Valencia [____] last June.", options:["for","since"], correct:1, explain:"last June نقطة زمنية محددة في الماضي (بداية الإقامة)، فنستخدم <b>since</b>."},
+      {q:"I haven't seen you [____] last week.", options:["for","since"], correct:1, explain:"last week هنا تُستخدم كنقطة بداية محددة، فالإجابة <b>since</b>."},
+      {q:"Yesterday I studied [____] three hours.", options:["for","since"], correct:0, explain:"three hours مدة زمنية، فنستخدم <b>for</b> (حتى مع أفعال الماضي البسيط)."},
+      {q:"She has been studying English [____] two months.", options:["for","since"], correct:0, explain:"two months مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"She has been studying English [____] last January.", options:["for","since"], correct:1, explain:"last January نقطة زمنية محددة في الماضي، فنستخدم <b>since</b>."},
+      {q:"She has been studying English [____] 12.00.", options:["for","since"], correct:1, explain:"12.00 نقطة زمنية محددة (وقت محدد)، فنستخدم <b>since</b>."},
+      {q:"She has been studying English [____] your birthday.", options:["for","since"], correct:1, explain:"your birthday نقطة زمنية محددة (يوم معيّن)، فنستخدم <b>since</b>."},
+      {q:"She has been studying English [____] two hours.", options:["for","since"], correct:0, explain:"two hours مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"She has been studying English [____] six minutes.", options:["for","since"], correct:0, explain:"six minutes مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"She has been studying English [____] a long time.", options:["for","since"], correct:0, explain:"a long time تعبير عن مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"I've been working here [____] the last two years.", options:["for","since"], correct:0, explain:"the last two years مدة زمنية، فنستخدم <b>for</b>."},
+      {q:"I have loved you [____] the first time I saw you.", options:["for","since"], correct:1, explain:"'the first time I saw you' نقطة بداية محددة في الماضي، فنستخدم <b>since</b>."}
+    ]
+  },
+
+  pastSimple: {
+    title: "Past Simple",
+    emoji: "🕰️",
+    cssClass: "c2",
+    questions: [
+      {q:"He [1]____ out his wallet and [2]____ the bill.", options:["took / paid","paid / took","gave / paid","took / gave"], correct:0, explain:"أخرج محفظته أولاً (<b>took</b> out) ثم دفع الفاتورة (<b>paid</b>). الترتيب المنطقي للأحداث هو: took ثم paid."},
+      {q:"When she [1]____ to the interview, she [2]____ her best outfit.", options:["wore / went","went / wore","went / won","drove / wore"], correct:1, explain:"ذهبت إلى المقابلة (<b>went</b>) وكانت ترتدي (<b>wore</b>) أفضل ملابسها. go ماضيها went، و wear ماضيها wore."},
+      {q:"They [1]____ the motorway and [2]____ for an hour on quiet country roads.", options:["drove / left","left / drove","took / drove","left / took"], correct:1, explain:"تركوا الطريق السريع (<b>left</b> the motorway) ثم قادوا (<b>drove</b>) لمدة ساعة. leave ماضيها left، و drive ماضيها drove."},
+      {q:"I [1]____ I [2]____ this theory but now I'm not so sure.", options:["understood / thought","knew / thought","thought / understood","thought / knew"], correct:2, explain:"كنت أعتقد (<b>thought</b>) أنني أفهم (<b>understood</b>) هذه النظرية، لكنني الآن غير متأكد. think ماضيها thought، و understand ماضيها understood."},
+      {q:"As soon as I [1]____ her, I [2]____ she was the woman I was going to marry.", options:["knew / met","met / thought","met / knew","saw / knew"], correct:2, explain:"بمجرد أن قابلتها (<b>met</b>)، عرفت (<b>knew</b>) أنها المرأة التي سأتزوجها. meet ماضيها met، و know ماضيها knew."},
+      {q:"He [1]____ fourteen novels, but not one of them [2]____ a prize.", options:["won / wrote","wrote / built","wrote / cost","wrote / won"], correct:3, explain:"كتب (<b>wrote</b>) أربع عشرة رواية، لكن لم تفز (<b>won</b>) أي منها بجائزة. write ماضيها wrote، و win ماضيها won."},
+      {q:"They [1]____ their own house, so it [2]____ them much less.", options:["cost / built","built / won","bought / cost","built / cost"], correct:3, explain:"بنوا (<b>built</b>) منزلهم الخاص، لذلك كلّفهم (<b>cost</b>) أقل بكثير. build ماضيها built، و cost تبقى cost في الماضي."},
+      {q:"When I [1]____ you were coming, I [2]____ the staff the rest of the day off.", options:["gave / heard","heard / took","knew / gave","heard / gave"], correct:3, explain:"عندما سمعت (<b>heard</b>) أنك قادم، أعطيت (<b>gave</b>) الموظفين بقية اليوم عطلة. hear ماضيها heard، و give ماضيها gave."},
+      {q:"The nurse [1]____ the patient's hand and [2]____ softly to him.", options:["spoke / held","held / heard","took / spoke","held / spoke"], correct:3, explain:"أمسكت الممرضة (<b>held</b>) بيد المريض وتحدثت (<b>spoke</b>) إليه بلطف. hold ماضيها held، و speak ماضيها spoke."},
+
+      {q:"She ____ (go) to Australia in 1994 and she liked it very much.", options:["went","goes","is going","gone"], correct:0, explain:"عبارة 'in 1994' تدل على زمن ماضٍ محدد، وفعل go الشاذ في الماضي هو <b>went</b>."},
+      {q:"The dog ____ (eat) its toy last night.", options:["eats","eating","ate","eaten"], correct:2, explain:"'last night' تدل على الماضي، وفعل eat الشاذ في الماضي هو <b>ate</b>."},
+      {q:"The policeman ____ (talk) to the burglar yesterday.", options:["talks","is talking","will talk","talked"], correct:3, explain:"'yesterday' تدل على الماضي، وفعل talk فعل منتظم فنضيف -ed لتصبح <b>talked</b>."},
+      {q:"____ you have a test last week?", options:["Do you have","Have you had","Did you have","Had you have"], correct:2, explain:"مع 'last week' وفي صيغة السؤال بالماضي البسيط نستخدم <b>Did</b> + الفاعل + الفعل في صورته الأساسية: Did you have."},
+      {q:"The gentleman ____ (speak) to his servant 2 hours ago.", options:["speaks","speaking","speaked","spoke"], correct:3, explain:"'2 hours ago' تدل على الماضي، وفعل speak الشاذ في الماضي هو <b>spoke</b>."},
+      {q:"The man ____ (drive) to the supermarket last weekend.", options:["drives","driving","drived","drove"], correct:3, explain:"'last weekend' تدل على الماضي، وفعل drive الشاذ في الماضي هو <b>drove</b>."},
+      {q:"My brothers ____ (leave) for England last week.", options:["leaves","leaving","leaved","left"], correct:3, explain:"'last week' تدل على الماضي، وفعل leave الشاذ في الماضي هو <b>left</b>."},
+
+      {q:"I ____ (go) to the cinema last night.", options:["go","gone","went","going"], correct:2, explain:"'last night' تدل على الماضي، وفعل go الشاذ في الماضي هو <b>went</b>."},
+      {q:"What film ____ (you - see)?", options:["do you see","you saw","have you seen","did you see"], correct:3, explain:"في السؤال بالماضي البسيط نستخدم: <b>did</b> + الفاعل + الفعل الأساسي → did you see؟"},
+      {q:"I ____ (see) The Lord of The Rings.", options:["see","seen","seeing","saw"], correct:3, explain:"فعل see الشاذ في الماضي هو <b>saw</b>."},
+      {q:"Really? ____ (you - like) it?", options:["do you like","you liked","have you liked","did you like"], correct:3, explain:"نفس قاعدة السؤال بالماضي البسيط: <b>did</b> + you + like."},
+      {q:"It ____ (be) really fantastic.", options:["is","were","been","was"], correct:3, explain:"فعل be مع 'it' في الماضي البسيط يكون <b>was</b>."},
+      {q:"I [1]____ (read) a romantic story last week, and yesterday, I [2]____ (go) to the opera.", options:["reading / went","red / went","read / go","read / went"], correct:3, explain:"فعل read في الماضي يُكتب بنفس الشكل <b>read</b> (لكن يُنطق /red/)، وفعل go ماضيه <b>went</b>."},
+
+      {q:"My parents are in the kitchen. (Rewrite in Past Simple)", options:["were","was","are","be"], correct:0, explain:"مع الفاعل الجمع (parents) نستخدم <b>were</b> مع فعل be في الماضي."},
+      {q:"Jenny helps her friends. (Rewrite in Past Simple)", options:["helpped","help","helping","helped"], correct:3, explain:"help فعل منتظم، نضيف -ed فقط لتصبح <b>helped</b> (وليس helpped)."},
+      {q:"Pat has my book. (Rewrite in Past Simple)", options:["haved","has","having","had"], correct:3, explain:"فعل have الشاذ في الماضي هو <b>had</b>."},
+      {q:"The children often do their homework. (Rewrite in Past Simple)", options:["doed","does","done","did"], correct:3, explain:"فعل do الشاذ في الماضي هو <b>did</b>."},
+      {q:"He builds an expensive house. (Rewrite in Past Simple)", options:["builded","builds","building","built"], correct:3, explain:"فعل build الشاذ في الماضي هو <b>built</b>."},
+      {q:"She grows up in Dallas. (Rewrite in Past Simple)", options:["growed","grows","growing","grew"], correct:3, explain:"فعل grow الشاذ في الماضي هو <b>grew</b> (وليس growed)."},
+      {q:"We study at a university. (Rewrite in Past Simple)", options:["studyed","study","studing","studied"], correct:3, explain:"فعل study ينتهي بـ y بعد حرف ساكن، فنحوّل y إلى i ونضيف ed لتصبح <b>studied</b>."},
+      {q:"They make mistakes. (Rewrite in Past Simple)", options:["maked","make","making","made"], correct:3, explain:"فعل make الشاذ في الماضي هو <b>made</b>."},
+      {q:"She stays with her aunt. (Rewrite in Past Simple)", options:["stayied","stays","staying","stayed"], correct:3, explain:"فعل stay ينتهي بـ y بعد حرف متحرك (vowel)، فنضيف -ed فقط لتصبح <b>stayed</b>."},
+      {q:"The teacher sometimes arrives late. (Rewrite in Past Simple)", options:["arriveed","arrives","arriving","arrived"], correct:3, explain:"فعل arrive ينتهي بحرف e، فنضيف -d فقط لتصبح <b>arrived</b>."}
+    ]
+  },
+
+  pastContinuous: {
+    title: "Past Continuous",
+    emoji: "🌀",
+    cssClass: "c3",
+    questions: [
+      {q:"What [1]____ (you/do) when I [2]____ (call) you last night?", options:["did you do / were calling","were you doing / called","were you doing / were calling","did you do / called"], correct:1, explain:"السؤال عن فعل مستمر في لحظة معينة: <b>were you doing</b>، والفعل القاطع call في الماضي البسيط: <b>called</b>."},
+      {q:"I [1]____ (sit) in a cafe when you [2]____ (call).", options:["sat / was calling","was sitting / was calling","sat / called","was sitting / called"], correct:3, explain:"كنت أجلس (<b>was sitting</b> - حدث طويل مستمر) عندما اتصلت (<b>called</b> - حدث قصير قاطع)."},
+      {q:"When you [1]____ (arrive) at the party, who [2]____ (be) there?", options:["were arriving / was","arrived / were","was arriving / were","arrived / was"], correct:3, explain:"arrive حدث قصير قاطع: <b>arrived</b>، وفعل be مع who هنا يأتي <b>was</b>."},
+      {q:"Susie [1]____ (watch) a film when she [2]____ (hear) the noise.", options:["watched / was hearing","was watching / was hearing","watched / heard","was watching / heard"], correct:3, explain:"كانت سوزي تشاهد (<b>was watching</b> - حدث مستمر) فيلمًا عندما سمعت (<b>heard</b> - حدث قاطع) الضجيج."},
+      {q:"Yesterday I [1]____ (go) to the library, next I [2]____ (have) a swim, later I [3]____ (meet) Julie for coffee.", options:["was going / was having / was meeting","went / was having / met","went / had / met","go / have / meet"], correct:2, explain:"هذه سلسلة أحداث متتابعة ومنتهية، فنستخدم الماضي البسيط لجميعها: <b>went, had, met</b>."},
+      {q:"We [1]____ (play) tennis when John [2]____ (hurt) his ankle.", options:["played / was hurting","were playing / was hurting","played / hurt","were playing / hurt"], correct:3, explain:"كنا نلعب التنس (<b>were playing</b> - مستمر) عندما أصاب جون (<b>hurt</b> - قاطع) كاحله."},
+      {q:"What [____] (they/do) at 10 pm last night - it was really noisy?", options:["were they doing","did they do","are they doing","have they done"], correct:0, explain:"نستخدم was/were + V-ing لوصف ما كان يحدث في لحظة محددة من الماضي (10 pm last night) → <b>were they doing</b>."},
+      {q:"He [1]____ (take) a shower when the telephone [2]____ (ring).", options:["took / was ringing","was taking / was ringing","took / rang","was taking / rang"], correct:3, explain:"كان يستحم (<b>was taking</b> - مستمر) عندما رنّ الهاتف (<b>rang</b> - قاطع)."},
+      {q:"He [1]____ (be) in the shower when the telephone [2]____ (ring).", options:["was being / rang","was / was ringing","is / rang","was / rang"], correct:3, explain:"فعل be (حالة) يأتي في الماضي البسيط <b>was</b> وليس مستمراً، وفعل ring في الماضي البسيط <b>rang</b>."},
+      {q:"When I [1]____ (walk) into the room, everyone [2]____ (work).", options:["was walking / worked","walked / worked","was walking / was working","walked / was working"], correct:3, explain:"دخلت الغرفة (<b>walked</b> - حدث قاطع) وكان الجميع يعملون (<b>was working</b> - حدث مستمر) في تلك اللحظة."},
+      {q:"It [1]____ (be) a sunny day. The sun [2]____ (shine) and the birds [3]____ (sing) when I [4]____ (meet) an old friend.", options:["was / shone / sang / met","was / was shining / were singing / was meeting","was / was shining / were singing / met","is / shines / sing / met"], correct:2, explain:"وصف المشهد العام (الشمس تشرق، الطيور تغني) يأتي بالماضي المستمر <b>was shining / were singing</b>، والحدث القاطع (قابلت صديقًا) بالماضي البسيط <b>met</b>."},
+      {q:"He [1]____ (live) in Russia when the Revolution [2]____ (start).", options:["lived / was starting","was living / was starting","lived / started","was living / started"], correct:3, explain:"كان يعيش في روسيا (<b>was living</b> - حالة مستمرة طويلة) عندما بدأت الثورة (<b>started</b> - حدث قاطع)."},
+      {q:"When her train [1]____ (get) to the station, we [2]____ (wait) on the platform.", options:["was getting / waited","got / waited","was getting / were waiting","got / were waiting"], correct:3, explain:"وصل القطار (<b>got</b> - حدث قاطع) ونحن كنا في انتظار (<b>were waiting</b> - حدث مستمر) على الرصيف."},
+      {q:"He [1]____ (be) so annoying! He [2]____ (always leave) his things everywhere.", options:["was / always left","is / was always leaving","was / always leaves","was / was always leaving"], correct:3, explain:"نستخدم الماضي المستمر مع <b>always</b> للتعبير عن الضيق من عادة متكررة في الماضي: <b>was always leaving</b>."},
+      {q:"On holiday we [1]____ (visit) Rome, [2]____ (see) the Vatican, and [3]____ (spend) a few days at the beach.", options:["were visiting / were seeing / were spending","visited / saw / were spending","visit / see / spend","visited / saw / spent"], correct:3, explain:"سلسلة أحداث متتابعة ومنتهية في العطلة، فنستخدم الماضي البسيط للجميع: <b>visited, saw, spent</b>."},
+      {q:"Why [1]____ (you/stand) on a chair when I [2]____ (come) into the room?", options:["did you stand / were coming","were you standing / were coming","did you stand / came","were you standing / came"], correct:3, explain:"كنت تقف على كرسي (<b>were you standing</b> - مستمر) عندما دخلت الغرفة (<b>came</b> - قاطع)."},
+      {q:"They [1]____ (live) in Germany when they [2]____ (be) young.", options:["were living / were","lived / was","were living / was","lived / were"], correct:3, explain:"live و be هنا أفعال حالة تصف فترة طويلة في الماضي، فنستخدم الماضي البسيط: <b>lived, were</b>."},
+      {q:"At 7 pm yesterday, we ____ (listen) to music.", options:["listened","listen","had listened","were listening"], correct:3, explain:"نستخدم الماضي المستمر لوصف فعل كان مستمرًا في لحظة محددة من الماضي (At 7 pm yesterday) → <b>were listening</b>."},
+      {q:"When I [1]____ (leave) the house, it [2]____ (snow).", options:["was leaving / snowed","left / snowed","was leaving / was snowing","left / was snowing"], correct:3, explain:"تركت المنزل (<b>left</b> - حدث قاطع) وكانت الثلوج تتساقط (<b>was snowing</b> - حدث مستمر) في الخلفية."},
+      {q:"He [1]____ (work) in a bank when he [2]____ (meet) his wife.", options:["worked / was meeting","was working / was meeting","worked / met","was working / met"], correct:3, explain:"كان يعمل في بنك (<b>was working</b> - حالة مستمرة طويلة) عندما قابل زوجته (<b>met</b> - حدث قاطع)."}
+    ]
+  },
+
+  presentSimpleCont: {
+    title: "Present Simple & Continuous",
+    emoji: "⏰",
+    cssClass: "c4",
+    questions: [
+      {q:"She ____ (run) because she's late for her lesson.", options:["runs","is running","run","running"], correct:1, explain:"الفعل يحدث الآن (في لحظة الكلام)، فنستخدم المضارع المستمر: <b>is running</b>."},
+      {q:"Our teacher always ____ (give) us lots of homework.", options:["gives","is giving","give","giving"], correct:0, explain:"كلمة <b>always</b> تدل على عادة متكررة، فنستخدم المضارع البسيط مع he/she/it بإضافة -s: <b>gives</b>."},
+      {q:"We ____ (not want) to go to the concert.", options:["don't want","doesn't want","aren't wanting","not want"], correct:0, explain:"مع we نستخدم don't في النفي بالمضارع البسيط: <b>don't want</b>."},
+      {q:"What time ____ (you/meet) Pete tomorrow?", options:["do you meet","are you meeting","you meet","have you met"], correct:1, explain:"نستخدم المضارع المستمر للتعبير عن خطة أو ترتيب مستقبلي محدد (tomorrow): <b>are you meeting</b>."},
+      {q:"I ____ (not work) today. I'm on holiday.", options:["don't work","'m not working","not working","doesn't work"], correct:1, explain:"today تدل على وضع مؤقت حالي، فنستخدم المضارع المستمر بالنفي: <b>'m not working</b>."},
+      {q:"People ____ (speak) English in Jamaica.", options:["speak","are speaking","speaks","is speaking"], correct:0, explain:"هذه حقيقة عامة دائمة، فنستخدم المضارع البسيط مع الجمع people: <b>speak</b>."},
+      {q:"Archie ____ (not use) his computer at the moment.", options:["doesn't use","isn't using","don't use","not using"], correct:1, explain:"عبارة at the moment تدل على المضارع المستمر، والنفي مع he/she/it: <b>isn't using</b>."},
+      {q:"____ (Tony/live) near the park?", options:["Is Tony living","Does Tony live","Do Tony live","Live Tony"], correct:1, explain:"هذا سؤال عن حقيقة دائمة (مكان السكن)، فنستخدم: <b>Does Tony live</b>؟"},
+
+      {q:"Look! He ____ (leave) the house.", options:["leaves","is leaving","leave","left"], correct:1, explain:"كلمة Look! تشير إلى حدث يحدث الآن أمامنا، فنستخدم المضارع المستمر: <b>is leaving</b>."},
+      {q:"Quiet please! I ____ (write) a test.", options:["write","am writing","writes","wrote"], correct:1, explain:"الحدث يحدث الآن في لحظة الكلام، فنستخدم المضارع المستمر: <b>am writing</b>."},
+      {q:"She usually ____ (walk) to school.", options:["walks","is walking","walk","walking"], correct:0, explain:"usually تدل على عادة متكررة، فنستخدم المضارع البسيط مع she بإضافة -s: <b>walks</b>."},
+      {q:"But look! Today she ____ (go) by bike.", options:["goes","is going","go","went"], correct:1, explain:"Today + look تدل على استثناء يحدث الآن، فنستخدم المضارع المستمر: <b>is going</b>."},
+      {q:"Every Sunday we ____ (go) to see my grandparents.", options:["go","are going","goes","going"], correct:0, explain:"Every Sunday تدل على عادة متكررة، فنستخدم المضارع البسيط: <b>go</b>."},
+      {q:"He often ____ (go) to the cinema.", options:["go","goes","is going","going"], correct:1, explain:"often تدل على التكرار، ومع he نضيف -es: <b>goes</b>."},
+      {q:"We ____ (play) football at the moment.", options:["play","are playing","plays","played"], correct:1, explain:"at the moment تدل على حدوث الفعل الآن، فنستخدم المضارع المستمر: <b>are playing</b>."},
+      {q:"The child seldom ____ (cry).", options:["cry","cries","is crying","crying"], correct:1, explain:"seldom تدل على التكرار (نادراً)، ومع the child (مفرد) ينتهي الفعل بـ y بعد ساكن فنحوّلها إلى -ies: <b>cries</b>."},
+      {q:"I ____ (not do) anything at the moment.", options:["don't do","am not doing","not do","doesn't do"], correct:1, explain:"at the moment تدل على المضارع المستمر، والنفي مع I: <b>am not doing</b>."},
+      {q:"____ (watch/he) the news regularly?", options:["Is he watching","Does he watch","Do he watch","Watches he"], correct:1, explain:"regularly تدل على عادة متكررة، فالسؤال بالمضارع البسيط: <b>Does he watch</b>؟"},
+
+      {q:"It ____ (be) early in the morning. (Sally's story)", options:["is","are","be","was"], correct:0, explain:"حقيقة/وصف عام في الحاضر مع it: <b>is</b>."},
+      {q:"Sally [1]____ (get) out of bed, [2]____ (open) the window and [3]____ (go) into the bathroom.", options:["get / open / go","gets / opens / goes","is getting / opening / going","got / opened / went"], correct:1, explain:"وصف روتين يومي متكرر (عادة)، فنستخدم المضارع البسيط مع she بإضافة -s/-es: <b>gets, opens, goes</b>."},
+      {q:"Then she ____ (have) breakfast.", options:["have","has","is having","had"], correct:1, explain:"have فعل شاذ يصبح <b>has</b> مع he/she/it، وهذه عادة يومية متكررة."},
+      {q:"After breakfast, Sally usually ____ (cycle) to school.", options:["cycle","cycles","is cycling","cycled"], correct:1, explain:"usually + she تدل على عادة، فنضيف -s: <b>cycles</b>."},
+      {q:"After school, she ____ (go) back home.", options:["go","goes","is going","went"], correct:1, explain:"عادة يومية متكررة مع she: <b>goes</b> (go + es)."},
+      {q:"Sally usually ____ (eat) her lunch at home.", options:["eat","eats","is eating","ate"], correct:1, explain:"usually + she تدل على عادة، فنضيف -s: <b>eats</b>."},
+      {q:"In the afternoons, she first [1]____ (do) her homework and then she [2]____ (meet) her friends in the park.", options:["do / meet","does / meets","is doing / meeting","did / met"], correct:1, explain:"عادة متكررة مع she: <b>does</b> (do+es) و <b>meets</b> (meet+s)."},
+      {q:"What ____ (do/she) now?", options:["does she do","is she doing","she is doing","do she do"], correct:1, explain:"كلمة now تدل على المضارع المستمر في السؤال: <b>is she doing</b>؟"},
+      {q:"She ____ (play) the guitar. (answering 'what is she doing now?')", options:["plays","is playing","play","played"], correct:1, explain:"الفعل يحدث الآن (now)، فنستخدم المضارع المستمر: <b>is playing</b>."},
+      {q:"Her friends [1]____ (listen) and some of them [2]____ (sing) along.", options:["listen / sing","are listening / are singing","listens / sings","were listening / singing"], correct:1, explain:"الفعل يحدث الآن في نفس لحظة العزف، فنستخدم المضارع المستمر مع الجمع: <b>are listening / are singing</b>."},
+      {q:"When Sally [1]____ (come) home in the evening, she [2]____ (have) dinner and then she [3]____ (watch) TV.", options:["comes / has / watches","come / have / watch","is coming / having / watching","came / had / watched"], correct:0, explain:"وصف روتين يومي متكرر، فنستخدم المضارع البسيط مع she: <b>comes, has, watches</b>."},
+      {q:"She ____ (go) to bed at about 8 o'clock every day.", options:["go","goes","is going","went"], correct:1, explain:"every day تدل على عادة يومية متكررة، ومع she: <b>goes</b>."},
+
+      {q:"She ____ (not ride) her bike right now.", options:["does not ride","is not riding","do not ride","not riding"], correct:1, explain:"right now تدل على المضارع المستمر، والنفي مع she: <b>is not riding</b>."},
+      {q:"We ____ (not stay) at home tonight.", options:["do not stay","are not staying","does not stay","not stay"], correct:1, explain:"tonight تدل على ترتيب مستقبلي قريب، فنستخدم المضارع المستمر بالنفي: <b>are not staying</b>."},
+      {q:"I ____ (not like) bananas.", options:["do not like","am not liking","does not like","not like"], correct:0, explain:"like فعل شعور/حالة لا يُستخدم عادة مع المستمر، والنفي بالمضارع البسيط مع I: <b>do not like</b>."},
+      {q:"They ____ (not know) the answer.", options:["do not know","are not knowing","does not know","not know"], correct:0, explain:"know فعل حالة، فنستخدم المضارع البسيط بالنفي مع they: <b>do not know</b>."},
+      {q:"I ____ (not sit) in the garden at the moment.", options:["do not sit","am not sitting","does not sit","not sitting"], correct:1, explain:"at the moment تدل على المضارع المستمر، والنفي مع I: <b>am not sitting</b>."},
+      {q:"When ____ (arrive/the plane)?", options:["is the plane arriving","does the plane arrive","do the plane arrive","arrives the plane"], correct:1, explain:"سؤال عن جدول زمني/حقيقة منتظمة، فنستخدم does: <b>does the plane arrive</b>؟"},
+      {q:"____ (visit/you) Jane in hospital today?", options:["Do you visit","Are you visiting","Does you visit","Have you visit"], correct:1, explain:"today تدل على خطة/ترتيب، فنستخدم المضارع المستمر: <b>Are you visiting</b>؟"},
+      {q:"What time ____ (get up/you) in the mornings?", options:["are you getting up","do you get up","does you get up","you get up"], correct:1, explain:"in the mornings تدل على عادة متكررة، فنستخدم المضارع البسيط: <b>do you get up</b>؟"},
+      {q:"Why ____ (cry/she) now?", options:["does she cry","is she crying","do she cry","she is crying"], correct:1, explain:"now تدل على المضارع المستمر: <b>is she crying</b>؟"},
+      {q:"____ (swim/they) in the pool at the moment?", options:["Do they swim","Are they swimming","Does they swim","They are swimming"], correct:1, explain:"at the moment تدل على المضارع المستمر: <b>Are they swimming</b>؟"},
+
+      {q:"Water <b>boils</b> at 100 degrees celsius. (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:0, explain:"هذه حقيقة علمية ثابتة، فاستخدام المضارع البسيط <b>boils</b> صحيح."},
+      {q:"The water <b>boils</b>. Can you turn it off? (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"الماء يغلي الآن أمامنا، فالصواب: <b>is boiling</b> (مضارع مستمر) وليس boils."},
+      {q:"Look! That man <b>tries</b> to open the door of your car. (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"Look! تدل على حدث يحدث الآن، فالصواب: <b>is trying</b> وليس tries."},
+      {q:"Can you hear those people? What <b>do they talk</b> about? (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"الحدث يحدث الآن (نسمعهم الآن)، فالصواب: <b>are they talking</b> وليس do they talk."},
+      {q:"The moon <b>goes</b> round the earth. (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:0, explain:"هذه حقيقة علمية ثابتة، فاستخدام <b>goes</b> (مضارع بسيط) صحيح."},
+      {q:"I must go now. It <b>gets</b> late. (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"وصف تغيّر تدريجي يحدث الآن، فالصواب: <b>is getting</b> late وليس gets."},
+      {q:"I usually <b>go</b> to work by car. (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:0, explain:"usually تدل على عادة متكررة، فاستخدام <b>go</b> (مضارع بسيط) صحيح."},
+      {q:"'Hurry up! It's time to leave.' 'OK, I <b>come</b>.' (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"للتعبير عن أنك ستأتي حالاً/الآن، الصواب: <b>I'm coming</b> وليس I come."},
+      {q:"I hear you've got a new job. How <b>do you get on</b>? (صحيحة أم خاطئة؟)", options:["Right (صحيحة)","Wrong (خاطئة)"], correct:1, explain:"السؤال عن وضع مستمر حالياً (كيف تسير الأمور الآن)، فالصواب: <b>are you getting on</b>."},
+
+      {q:"A: I've lost my key again. B: Not again! You ____.", options:["lose your key always","'re always losing your key","always lose your key","'re losing your key always"], correct:1, explain:"للتعبير عن الانزعاج من عادة متكررة ومزعجة، نستخدم: be + always + V-ing → <b>'re always losing</b>."},
+      {q:"A: The car has broken down again. B: That car is useless! It ____.", options:["always breaks down","is always breaking down","breaks down always","is breaking down always"], correct:1, explain:"is + always + V-ing للتعبير عن الضيق من تكرار العطل: <b>is always breaking down</b>."},
+      {q:"A: Look! You've made the same mistake again. B: Oh no, not again! I ____.", options:["always make the same mistake","am always making the same mistake","make always the same mistake","am making always the same mistake"], correct:1, explain:"am + always + V-ing للتعبير عن الانزعاج من تكرار نفس الخطأ: <b>am always making</b>."},
+      {q:"A: Oh, I've left the lights on again. B: Typical! You ____.", options:["always leave the lights on","leave always the lights on","are always leaving the lights on","are leaving always the lights on"], correct:2, explain:"are + always + V-ing للتعبير عن الانزعاج من عادة متكررة: <b>are always leaving</b>."},
+
+      {q:"Let's go out. It ____ (not rain) now.", options:["doesn't rain","isn't raining","don't rain","not raining"], correct:1, explain:"now تدل على المضارع المستمر بالنفي: <b>isn't raining</b>."},
+      {q:"Julia ____ (speak) four languages very well.", options:["speak","speaks","is speaking","spoke"], correct:1, explain:"هذه قدرة/حقيقة ثابتة عن جوليا، فنستخدم المضارع البسيط مع she: <b>speaks</b>."},
+      {q:"Hurry up! Everybody ____ (wait) for you.", options:["wait","waits","is waiting","waited"], correct:2, explain:"الحدث يحدث الآن (انتظار حالي)، فنستخدم المضارع المستمر: <b>is waiting</b> (everybody تُعامل كمفرد)."},
+      {q:"'____ (you/listen) to the radio?' 'No, you can turn it off.'", options:["Do you listen","Are you listening","Does you listen","You are listening"], correct:1, explain:"السؤال عن حدوث الفعل الآن (يمكن إغلاقه الآن): <b>Are you listening</b>؟"},
+      {q:"'____ (you/listen) to the radio every day?'", options:["Do you listen","Are you listening","Does you listen","You listen"], correct:0, explain:"every day تدل على عادة متكررة، فالسؤال بالمضارع البسيط: <b>Do you listen</b>؟"},
+      {q:"The River Nile ____ (flow) into the Mediterranean.", options:["flow","flows","is flowing","flowed"], correct:1, explain:"حقيقة جغرافية ثابتة، فنستخدم المضارع البسيط: <b>flows</b>."},
+      {q:"Look at the river. It ____ (flow) very fast today.", options:["flows","is flowing","flow","flowed"], correct:1, explain:"today + Look تدل على حالة مؤقتة حالية، فنستخدم المضارع المستمر: <b>is flowing</b>."},
+      {q:"We usually [1]____ (grow) vegetables but this year we [2]____ (not grow) any.", options:["grow / don't grow","grow / are not growing","are growing / don't grow","grows / isn't growing"], correct:1, explain:"usually تدل على عادة (<b>grow</b>)، لكن this year تدل على وضع مؤقت حالي بالنفي: <b>are not growing</b>."},
+      {q:"'How is your English?' 'Not bad. It ____ (improve) slowly.'", options:["improves","is improving","improve","improved"], correct:1, explain:"وصف تطور مستمر وتدريجي يحدث حالياً، فنستخدم المضارع المستمر: <b>is improving</b>."},
+      {q:"Jim is very untidy. He ____ (always leave) his things everywhere.", options:["always leaves","is always leaving","leaves always","is leaving always"], correct:1, explain:"is + always + V-ing للتعبير عن الانزعاج من عادة متكررة ومزعجة: <b>is always leaving</b>."}
+    ]
+  },
+
+  presentPerfect: {
+    title: "Present Perfect",
+    emoji: "✅",
+    cssClass: "c5",
+    questions: [
+      {q:"Don't come in here with those muddy shoes!! I have ____ cleaned this floor!!!", options:["just","yet","already"], correct:0, explain:"<b>just</b> تُستخدم للتعبير عن فعل تم للتو (منذ لحظات): 'لقد نظفت الأرض للتو'."},
+      {q:"I don't want to see 'Alien 9' at the cinema again. I've ____ seen it twice.", options:["just","yet","already"], correct:2, explain:"<b>already</b> تُستخدم لتأكيد أن الفعل قد حدث من قبل بصيغة إيجابية: 'لقد سبق ورأيته مرتين'."},
+      {q:"I'm sorry. You have ____ missed Katie. She left the office about three minutes ago!", options:["just","yet","already"], correct:0, explain:"<b>just</b> تدل على أن الحدث (مغادرة كاتي) حصل منذ لحظات قليلة فقط."},
+      {q:"Haven't you finished that composition for history class ____? You started over four hours ago!!", options:["just","yet","already"], correct:1, explain:"<b>yet</b> تُستخدم في الأسئلة والنفي للتعبير عن توقع حدوث شيء لم يحدث بعد: 'ألم تنتهِ بعد؟'."},
+      {q:"Oh, nothing for me, thank you. I've ____ eaten. I had dinner less than an hour ago.", options:["just","yet","already"], correct:0, explain:"<b>just</b> تدل على أن الفعل (تناول الطعام) حدث منذ وقت قصير جداً."},
+      {q:"You've finished your dinner ____! You must have been starving!", options:["just","yet","already"], correct:2, explain:"<b>already</b> تُستخدم للتعبير عن المفاجأة من سرعة حدوث الفعل: 'لقد انتهيت بالفعل!'."},
+      {q:"'Have you called Yasmin to wish her luck for the exam today?' 'No, not ____. I'll do it now!'", options:["just","yet","already"], correct:1, explain:"<b>yet</b> في الرد المنفي تعني 'ليس حتى الآن'."},
+      {q:"Yes, I know David. We have ____ been introduced. It was at a party last week.", options:["just","yet","already"], correct:2, explain:"<b>already</b> تُستخدم للتأكيد على أن التعارف حدث من قبل."},
+
+      {q:"Have you ____ been in America?", options:["ever","never","just","already","yet"], correct:0, explain:"<b>ever</b> تُستخدم في الأسئلة للسؤال عن الخبرة 'في أي وقت من حياتك'."},
+      {q:"Do you hear the noise? The train has ____ arrived.", options:["ever","never","just","already","yet"], correct:2, explain:"<b>just</b> تعني أن الحدث (وصول القطار) حدث للتو."},
+      {q:"No. Your cousin hasn't come to the party ____.", options:["ever","never","just","already","yet"], correct:4, explain:"<b>yet</b> في النفي تعني 'لم يحدث حتى الآن'."},
+      {q:"Can you open the door? Oh, it is ____ open.", options:["ever","never","just","already","yet"], correct:3, explain:"<b>already</b> تعني 'بالفعل/مسبقاً' (الباب مفتوح بالفعل)."},
+      {q:"Your daughter has ____ returned home. You don't have to worry anymore.", options:["ever","never","just","already","yet"], correct:2, explain:"<b>just</b> تعني أن الحدث (عودتها) حصل منذ قليل."},
+      {q:"Haven't you finished your food ____? No, I am still eating mom.", options:["ever","never","just","already","yet"], correct:4, explain:"<b>yet</b> في السؤال المنفي تعني 'حتى الآن'."},
+      {q:"I am a very lucky person. I have ____ had nightmares.", options:["ever","never","just","already","yet"], correct:1, explain:"<b>never</b> تعني 'أبداً' وتُستخدم لنفي حدوث الفعل في أي وقت من الماضي."},
+      {q:"Are you going to meet me at the shop? Yes, I am ____ there.", options:["ever","never","just","already","yet"], correct:3, explain:"<b>already</b> تعني 'بالفعل' (أنا هناك بالفعل/مسبقاً)."},
+      {q:"I have ____ realized how beautiful you are.", options:["ever","never","just","already","yet"], correct:2, explain:"<b>just</b> تعني 'أدركت ذلك للتو'."},
+      {q:"Would you like to have dinner with us? No thanks, I have ____ had dinner.", options:["ever","never","just","already","yet"], correct:3, explain:"<b>already</b> تعني 'تناولت العشاء مسبقاً'."},
+      {q:"Have you ____ seen such a big ant?", options:["ever","never","just","already","yet"], correct:0, explain:"<b>ever</b> في السؤال تعني 'في أي وقت من حياتك'."},
+
+      {q:"I ____ (not work) today.", options:["have not worked","has not worked","did not work","am not working"], correct:0, explain:"مع I نستخدم have، والنفي بإضافة not: <b>have not worked</b> (haven't worked)."},
+      {q:"We ____ (buy) a new lamp.", options:["have bought","has bought","buyed","have buy"], correct:0, explain:"buy فعل شاذ، تصريفه الثالث bought، ومع we نستخدم have: <b>have bought</b>."},
+      {q:"We ____ (not plan) our holiday yet.", options:["have not planned","has not planned","did not plan","not planned"], correct:0, explain:"plan فعل ينتهي بحرف ساكن مسبوق بمتحرك واحد فنضاعفه: planned، ومع we: <b>have not planned</b>."},
+      {q:"Where ____ (be/you)?", options:["have you been","has you been","did you be","are you been"], correct:0, explain:"التصريف الثالث لـ be هو been، ومع you نستخدم have: <b>Where have you been</b>؟"},
+      {q:"He ____ (write) five letters.", options:["has written","have written","has wrote","writed"], correct:0, explain:"write فعل شاذ، تصريفه الثالث written، ومع he نستخدم has: <b>has written</b>."},
+      {q:"She ____ (not see) him for a long time.", options:["has not seen","have not seen","did not see","has not see"], correct:0, explain:"see فعل شاذ، تصريفه الثالث seen، ومع she: <b>has not seen</b>."},
+      {q:"____ (be/you) at school?", options:["Have you been","Has you been","Did you be","Are you been"], correct:0, explain:"السؤال بالمضارع التام: Have + you + التصريف الثالث لـ be: <b>Have you been</b>؟"},
+      {q:"School ____ (not start) yet.", options:["has not started","have not started","did not start","not started"], correct:0, explain:"start فعل منتظم: started، ومع school (مفرد): <b>has not started</b>."},
+      {q:"____ (speak/he) to his boss?", options:["Has he spoken","Have he spoken","Did he speak","Has he speak"], correct:0, explain:"speak فعل شاذ، تصريفه الثالث spoken، والسؤال مع he: <b>Has he spoken</b>؟"},
+      {q:"No, he ____ (not have) the time yet.", options:["has not had","have not had","did not have","has not have"], correct:0, explain:"have تصريفها الثالث had، ومع he: <b>has not had</b> (hasn't had)."}
+    ]
+  },
+
+  beenGone: {
+    title: "Been & Gone",
+    emoji: "🧳",
+    cssClass: "c6",
+    questions: [
+      {q:"Have you ever ____ to Cappadocia? It's breathtaking.", options:["been","gone"], correct:0, explain:"<b>been</b> مع ever تُستخدم للتعبير عن خبرة سابقة (الشخص زار المكان وعاد)."},
+      {q:"I have ____ to Antalya 6 times.", options:["been","gone"], correct:0, explain:"ذكر عدد المرات (6 times) يعني أن الشخص ذهب وعاد، فنستخدم <b>been</b>."},
+      {q:"My sister isn't at home at the moment. She has ____ shopping.", options:["been","gone"], correct:1, explain:"بما أنها ليست في البيت الآن، فهي 'ذهبت ولم تعد بعد': <b>gone</b>."},
+      {q:"Mom will be home soon. She has ____ to my brother's school.", options:["been","gone"], correct:1, explain:"بما أنها ستعود 'قريباً'، فهي لا تزال في المدرسة الآن: <b>gone</b>."},
+      {q:"They have ____ to Izmir for ten days. They have just returned home.", options:["been","gone"], correct:0, explain:"بما أنهم عادوا للتو (just returned)، فالرحلة اكتملت: <b>been</b>."},
+      {q:"Pynar won't be with us at the party. She has ____ to Vienna.", options:["been","gone"], correct:1, explain:"بما أنها لن تحضر الحفلة، فهي لا تزال في فيينا: <b>gone</b>."},
+      {q:"I know Tarsus very well. I have ____ there many times.", options:["been","gone"], correct:0, explain:"عبارة many times تعني خبرة وزيارات سابقة متكررة (وعاد كل مرة): <b>been</b>."},
+      {q:"Where is my bike? It's ____ away.", options:["been","gone"], correct:1, explain:"الدراجة غير موجودة الآن (اختفت): <b>gone</b>."},
+      {q:"They have ____ to Rome. They will return next week.", options:["been","gone"], correct:1, explain:"سيعودون الأسبوع القادم، يعني أنهم لا يزالون في روما الآن: <b>gone</b>."}
+    ]
+  }
+};
+
+/* ========================= ENGINE ========================= */
+let state = {
+  category: null,
+  index: 0,
+  score: 0,
+  answers: []
+};
+
+const homeScreen = document.getElementById('home-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const resultScreen = document.getElementById('result-screen');
+const categoryList = document.getElementById('category-list');
+
+const catLabel = document.getElementById('cat-label');
+const scorePill = document.getElementById('score-pill');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+const questionText = document.getElementById('question-text');
+const optionsGrid = document.getElementById('options-grid');
+const feedbackBox = document.getElementById('feedback-box');
+const feedbackTitle = document.getElementById('feedback-title');
+const feedbackText = document.getElementById('feedback-text');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+function showScreen(screen){
+  [homeScreen, quizScreen, resultScreen].forEach(s => s.classList.remove('active'));
+  screen.classList.add('active');
+}
+
+/* Build home screen category cards */
+function buildHome(){
+  categoryList.innerHTML = '';
+  Object.keys(questionsData).forEach(key => {
+    const cat = questionsData[key];
+    const card = document.createElement('div');
+    card.className = 'category-card ' + cat.cssClass;
+    card.innerHTML = `
+      <div class="category-emoji">${cat.emoji}</div>
+      <div class="category-text">
+        <div class="category-title">${cat.title}</div>
+        <div class="category-count">${cat.questions.length} سؤال • اضغط للبدء</div>
+      </div>
+      <div style="font-size:1.5rem;">▶️</div>
+    `;
+    card.addEventListener('click', () => startQuiz(key));
+    categoryList.appendChild(card);
+  });
+}
+
+function startQuiz(key){
+  state.category = key;
+  state.index = 0;
+  state.score = 0;
+  state.answers = new Array(questionsData[key].questions.length).fill(null);
+  catLabel.textContent = questionsData[key].emoji + ' ' + questionsData[key].title;
+  showScreen(quizScreen);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const cat = questionsData[state.category];
+  const q = cat.questions[state.index];
+  const total = cat.questions.length;
+
+  // progress
+  progressFill.style.width = ((state.index) / total * 100) + '%';
+  progressText.textContent = `السؤال ${state.index + 1} من ${total}`;
+  scorePill.textContent = `⭐ ${state.score}`;
+
+  // question text -> highlight blanks
+  let formatted = q.q.replace(/\[(.*?)\]/g, (m, inner) => {
+    return `<span class="blank">${inner === '____' ? '____' : inner}</span>`;
+  });
+  questionText.innerHTML = formatted;
+
+  // options
+  optionsGrid.innerHTML = '';
+  optionsGrid.className = 'options-grid' + (q.options.length >= 5 ? ' many-options' : (q.options.some(o => o.length > 14) ? ' single-col' : ''));
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectAnswer(i));
+    optionsGrid.appendChild(btn);
+  });
+
+  // feedback
+  feedbackBox.classList.remove('show', 'correct-fb', 'wrong-fb');
+  feedbackText.innerHTML = '';
+
+  // restore previous answer if revisiting
+  const prevAnswer = state.answers[state.index];
+  if(prevAnswer !== null){
+    lockOptions(prevAnswer, q, false);
+  }
+
+  // nav buttons
+  prevBtn.disabled = state.index === 0;
+  nextBtn.disabled = prevAnswer === null;
+  nextBtn.textContent = state.index === total - 1 ? 'النتيجة 🏁' : 'التالي ➡️';
+}
+
+function selectAnswer(selectedIndex){
+  if(state.answers[state.index] !== null) return; // already answered
+
+  const cat = questionsData[state.category];
+  const q = cat.questions[state.index];
+  state.answers[state.index] = selectedIndex;
+
+  const isCorrect = selectedIndex === q.correct;
+  if(isCorrect){
+    state.score++;
+    scorePill.textContent = `⭐ ${state.score}`;
+    launchConfetti();
+    showFeedback(true, q);
+  } else {
+    showFeedback(false, q);
+  }
+
+  lockOptions(selectedIndex, q, true);
+  nextBtn.disabled = false;
+}
+
+function lockOptions(selectedIndex, q, animate){
+  const buttons = optionsGrid.querySelectorAll('.option-btn');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if(i === q.correct){
+      btn.classList.add('correct');
+    }
+    if(i === selectedIndex && selectedIndex !== q.correct){
+      btn.classList.add('wrong');
+    }
+    if(i !== q.correct && i !== selectedIndex){
+      btn.classList.add('dim');
+    }
+  });
+  if(!animate){
+    // show feedback again without re-triggering confetti
+    showFeedback(selectedIndex === q.correct, q);
+  }
+}
+
+function showFeedback(isCorrect, q){
+  feedbackBox.classList.add('show');
+  if(isCorrect){
+    feedbackBox.classList.add('correct-fb');
+    feedbackBox.classList.remove('wrong-fb');
+    feedbackTitle.textContent = '🎉 برافو! إجابة صحيحة!';
+    feedbackText.innerHTML = q.explain;
+  } else {
+    feedbackBox.classList.add('wrong-fb');
+    feedbackBox.classList.remove('correct-fb');
+    feedbackTitle.textContent = '💡 لا بأس، لنتعلم من هذا!';
+    feedbackText.innerHTML = q.explain;
+  }
+}
+
+prevBtn.addEventListener('click', () => {
+  if(state.index > 0){
+    state.index--;
+    renderQuestion();
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  const total = questionsData[state.category].questions.length;
+  if(state.index < total - 1){
+    state.index++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+document.getElementById('home-btn-quiz').addEventListener('click', () => {
+  showScreen(homeScreen);
+});
+
+/* ===== Result screen ===== */
+function showResult(){
+  const cat = questionsData[state.category];
+  const total = cat.questions.length;
+  const score = state.score;
+  const pct = score / total;
+
+  document.getElementById('result-score').textContent = `${score} / ${total}`;
+
+  let emoji, title, msg;
+  if(pct === 1){
+    emoji = '🏆🌟'; title = 'أنت بطل حقيقي!';
+    msg = 'إجابات مثالية بالكامل! أداء رائع جداً 👏';
+    launchConfetti(60);
+  } else if(pct >= 0.8){
+    emoji = '🎉😄'; title = 'ممتاز جداً!';
+    msg = 'كنت قريباً جداً من الكمال، أحسنت!';
+    launchConfetti(40);
+  } else if(pct >= 0.5){
+    emoji = '👍🙂'; title = 'أداء جيد!';
+    msg = 'نتيجة جيدة، استمر في التدريب لتصبح أفضل!';
+  } else {
+    emoji = '💪📚'; title = 'لا بأس، لنحاول مجدداً!';
+    msg = 'كل خطوة هي تعلّم. راجع الشرح وأعد المحاولة!';
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-msg').textContent = msg;
+
+  showScreen(resultScreen);
+}
+
+document.getElementById('retry-btn').addEventListener('click', () => {
+  startQuiz(state.category);
+});
+
+document.getElementById('menu-btn').addEventListener('click', () => {
+  showScreen(homeScreen);
+});
+
+/* ===== Confetti ===== */
+function launchConfetti(amount = 26){
+  const colors = ['#FFD93D','#54C5F8','#FF9EBB','#7ED957','#B28DFF','#FF7A7A'];
+  for(let i = 0; i < amount; i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
+    piece.style.transform = `rotate(${Math.random()*360}deg)`;
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 3600);
+  }
+}
+
+/* ===== Init ===== */
+buildHome();
+</script>
+</body>
+</html>
